@@ -1,1 +1,1 @@
-# EyeTrackingGame
+# EEG-Matching-Game-Puzzle
