@@ -1,3 +1,10 @@
+"""
+@Author:: Zach Wang
+This file provides the main game interface and the main game interface operation functions.
+"""
+
+
+
 from random import random
 
 from main import *

@@ -42,6 +42,9 @@ class GameState(Enum):
 
 def main():
     pygame.init()
+    pn = PyNeuro()
+    pn.connect()
+    pn.start()
 
     '''change: the size of main window and elememt position'''
     screen = pygame.display.set_mode((1000, 800))  # windows_size
