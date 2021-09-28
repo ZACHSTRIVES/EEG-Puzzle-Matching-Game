@@ -1,8 +1,11 @@
-from random import random
-
+"""
+@Author:: Zach Wang
+This file provides the main game interface and the main game interface operation functions.
+"""
 from main import *
 import random, pygame, sys
 from pygame.locals import *
+
 
 FPS = 30  # frames per second, the general speed of the program
 WINDOWWIDTH = 1000  # size of window's width in pixels
