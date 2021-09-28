@@ -3,7 +3,7 @@ import pygame.freetype
 from pygame.sprite import Sprite
 from pygame.rect import Rect
 from enum import Enum
-from gamePage import *
+from game import *
 
 img = pygame.image.load("img/nosignal_v1.png") #import img
 img = pygame.transform.scale(img, (60,60))
