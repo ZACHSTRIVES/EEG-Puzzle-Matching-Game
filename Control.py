@@ -51,8 +51,9 @@ class Control:
 
         # init screens:
         self.title_screen = TitleScreen(self.__screen)
+        self.game_screen = Game(self.__screen)
 
-        pn = PyNeuro(title_screen=self.title_screen)
+        pn = PyNeuro(title_screen=self.title_screen,game=self.game_screen)
         pn.connect()
         pn.start()
 
@@ -65,7 +66,7 @@ class Control:
                 game_state = self.title_screen.run()
 
             if game_state == GameState.NEWGAME:
-                game_state = play_level(self.__screen)
+                game_state = self.game_screen.play()
 
             if game_state == GameState.FINISH:
                 game_state = game_finish(self.__screen)
@@ -74,6 +75,7 @@ class Control:
                 game_state = game_info(self.__screen)
 
             if game_state == GameState.QUIT:
+                pn.disconnect()
                 pygame.quit()
                 return
 

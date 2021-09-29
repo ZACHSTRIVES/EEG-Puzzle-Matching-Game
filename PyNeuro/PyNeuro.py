@@ -40,11 +40,12 @@ class PyNeuro:
 
     callBacksDictionary = {}  # keep a track of all callbacks
 
-    def __init__(self,title_screen):
+    def __init__(self,title_screen,game):
         self.__parserThread = None
         self.__threadRun = False
         self.__connected = False
         self.title_screen = title_screen
+        self.game = game
 
     def connect(self):
         """
@@ -159,6 +160,7 @@ class PyNeuro:
         if len(self.__attention_callbacks) != 0:
             for callback in self.__attention_callbacks:
                 callback(self.__attention)
+        self.game.attention=value
 
     # meditation
     @property
