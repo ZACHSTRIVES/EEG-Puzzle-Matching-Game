@@ -57,6 +57,10 @@ class Control:
         pn.start()
 
 
+        self.info_screen = InfoScreen(self.__screen)
+        self.finish_screen = FinishScreen(self.__screen)
+
+
 
         while True:
             # The function below has move to independent def refere to different pages
@@ -68,10 +72,10 @@ class Control:
                 game_state = play_level(self.__screen)
 
             if game_state == GameState.FINISH:
-                game_state = game_finish(self.__screen)
+                game_state = self.info_screen(self.__screen).run()
 
             if game_state == GameState.INFO:
-                game_state = game_info(self.__screen)
+                game_state = self.info_screen(self.__screen).run()
 
             if game_state == GameState.QUIT:
                 pygame.quit()
