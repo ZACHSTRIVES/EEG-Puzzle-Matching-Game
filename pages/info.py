@@ -13,27 +13,31 @@ WHITE = (255, 255, 255)
 rule = pygame.image.load("img/rule.png")
 rule = pygame.transform.scale(rule, (633, 513))
 
-def game_info(screen):
-    info_btn = UIElement(
-        center_position=(500, 700),
-        font_size=30,
-        bg_rgb=PINK,
-        text_rgb=TXT_1,
-        text="Back to main",
-        action=GameState.TITLE,
-    )
+class InfoScreen:
+    def __init__(self, screen):
+        self.__screen = screen
 
-    while True:
-        mouse_up = False
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                mouse_up = True
-        screen.fill(PINK)
+    def run(self):
+        info_btn = UIElement(
+            center_position=(500, 700),
+            font_size=30,
+            bg_rgb=PINK,
+            text_rgb=TXT_1,
+            text="Back to main",
+            action=GameState.TITLE,
+        )
 
-        ui_action = info_btn.update(pygame.mouse.get_pos(), mouse_up)
-        if ui_action is not None:
-            return ui_action
-        info_btn.draw(screen)
-        screen.blit(rule, (193, 80))
+        while True:
+            mouse_up = False
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                    mouse_up = True
+            self.__screen.fill(PINK)
 
-        pygame.display.flip()
+            ui_action = info_btn.update(pygame.mouse.get_pos(), mouse_up)
+            if ui_action is not None:
+                return ui_action
+            info_btn.draw(self.__screen)
+            self.__screen.blit(rule, (193, 80))
+
+            pygame.display.flip()
