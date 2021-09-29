@@ -40,10 +40,11 @@ class PyNeuro:
 
     callBacksDictionary = {}  # keep a track of all callbacks
 
-    def __init__(self):
+    def __init__(self,title_screen):
         self.__parserThread = None
         self.__threadRun = False
         self.__connected = False
+        self.title_screen = title_screen
 
     def connect(self):
         """
@@ -90,7 +91,7 @@ class PyNeuro:
                     data = json.loads(raw_str)
                     if "status" in data.keys():
                         if self.__status != data["status"]:
-                            self.__status = data["status"]
+                            self.status = data["status"]
                             if data["status"] == "scanning":
                                 print("[PyNeuro] Scanning device..")
                             else:
@@ -98,11 +99,11 @@ class PyNeuro:
                     else:
                         if "eSense" in data.keys():
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
-                                self.__status = "fitting"
+                                self.status = "fitting"
 
                             else:
 
-                                self.__status = "connected"
+                                self.status = "connected"
                                 self.attention = data["eSense"]["attention"]
                                 self.meditation = data["eSense"]["meditation"]
                                 self.__attention_records.append(data["eSense"]["attention"])
@@ -136,6 +137,14 @@ class PyNeuro:
         """
 
         self.__blinkStrength__callbacks.append(callback)
+
+    def set_status_callback(self, callback):
+        """
+        Set callback function of meditation value
+        :param callback: function(blinkStrength: int)
+        """
+
+        self.__status__callbacks.append(callback)
 
     # attention
     @property
@@ -189,4 +198,7 @@ class PyNeuro:
         self.__status = value
         for callback in self.__status__callbacks:
             callback(self.__status)
+
+        self.title_screen.signal_status=value
+        print(self.title_screen.signal_status)
 

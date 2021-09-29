@@ -3,9 +3,9 @@
 This file provides the main game interface and the main game interface operation functions.
 """
 from main import *
+from Control import *
 import random, pygame, sys
 from pygame.locals import *
-
 
 FPS = 30  # frames per second, the general speed of the program
 WINDOWWIDTH = 1000  # size of window's width in pixels
@@ -30,7 +30,7 @@ YELLOW = (255, 255, 0)
 ORANGE = (255, 128, 0)
 PURPLE = (255, 0, 255)
 CYAN = (0, 255, 255)
-LIGHTBLUE = (106,159,181)
+LIGHTBLUE = (106, 159, 181)
 
 BGCOLOR = LIGHTBLUE
 LIGHTBGCOLOR = GRAY
@@ -48,13 +48,14 @@ ALLSHAPES = (DONUT, SQUARE, DIAMOND, LINES, OVAL)
 assert len(ALLCOLORS) * len(
     ALLSHAPES) * 2 >= BOARDWIDTH * BOARDHEIGHT, "Board is too big for the number of shapes/colors defined."
 
+
 def play_level(screen):
     global FPSCLOCK, DISPLAYSURF
     finsih_btn = UIElement(
         center_position=(140, 770),
         font_size=20,
         bg_rgb=BLUE,
-        text_rgb=TXT_1,
+        text_rgb=(0,0,0),
         text="Game finished",
         action=GameState.FINISH,
     )
@@ -133,8 +134,6 @@ def play_level(screen):
         FPSCLOCK.tick(FPS)
 
 
-
-
 def generateRevealedBoxesData(val):
     revealedBoxes = []
     for i in range(BOARDWIDTH):
@@ -204,7 +203,7 @@ def drawIcon(shape, color, boxx, boxy):
         pygame.draw.rect(DISPLAYSURF, color, (left + quarter, top + quarter, BOXSIZE - half, BOXSIZE - half))
     elif shape == DIAMOND:
         pygame.draw.polygon(DISPLAYSURF, color, (
-        (left + half, top), (left + BOXSIZE - 1, top + half), (left + half, top + BOXSIZE - 1), (left, top + half)))
+            (left + half, top), (left + BOXSIZE - 1, top + half), (left + half, top + BOXSIZE - 1), (left, top + half)))
     elif shape == LINES:
         for i in range(0, BOXSIZE, 4):
             pygame.draw.line(DISPLAYSURF, color, (left, top + i), (left + i, top))
