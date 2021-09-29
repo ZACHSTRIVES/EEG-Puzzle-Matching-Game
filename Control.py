@@ -10,7 +10,6 @@ from PyNeuro.PyNeuro import PyNeuro
 from UIElement import UIElement
 from GameState import GameState
 
-
 from pages.game import *
 from pages.info import *
 from pages.finish import *
@@ -53,15 +52,12 @@ class Control:
         self.title_screen = TitleScreen(self.__screen)
         self.game_screen = Game(self.__screen)
 
-        pn = PyNeuro(title_screen=self.title_screen,game=self.game_screen)
+        pn = PyNeuro(title_screen=self.title_screen, game=self.game_screen)
         pn.connect()
         pn.start()
 
-
         self.info_screen = InfoScreen(self.__screen)
         self.finish_screen = FinishScreen(self.__screen)
-
-
 
         while True:
             # The function below has move to independent def refere to different pages
@@ -73,16 +69,12 @@ class Control:
                 game_state = self.game_screen.play()
 
             if game_state == GameState.FINISH:
-                game_state = self.info_screen(self.__screen).run()
+                game_state = self.info_screen.run()
 
             if game_state == GameState.INFO:
-                game_state = self.info_screen(self.__screen).run()
+                game_state = self.info_screen.run()
 
             if game_state == GameState.QUIT:
                 pn.disconnect()
                 pygame.quit()
                 return
-
-
-
-
