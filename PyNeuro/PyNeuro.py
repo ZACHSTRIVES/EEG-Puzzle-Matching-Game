@@ -100,7 +100,9 @@ class PyNeuro:
                     else:
                         if "eSense" in data.keys():
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
-                                self.status = "fitting"
+                                if data["status"] == "fitting":
+                                    if self.__status != data["status"]:
+                                        self.status="fitting"
 
                             else:
 
