@@ -13,7 +13,7 @@ WINDOWHEIGHT = 800  # size of windows' height in pixels
 REVEALSPEED = 8  # speed boxes' sliding reveals and covers
 BOXSIZE = 100  # size of box height & width in pixels
 GAPSIZE = 10  # size of gap between boxes in pixels
-BOARDWIDTH = 5 # number of columns of icons
+BOARDWIDTH = 5  # number of columns of icons
 BOARDHEIGHT = 4  # number of rows of icons
 assert (BOARDWIDTH * BOARDHEIGHT) % 2 == 0, 'Board needs to have an even number of boxes for pairs of matches.'
 XMARGIN = int((WINDOWWIDTH - (BOARDWIDTH * (BOXSIZE + GAPSIZE))) / 2)
@@ -61,6 +61,8 @@ CHERRY = pygame.transform.scale(pygame.image.load("img/cards/cherry.jpg"), (BOXS
 DRAGON = pygame.transform.scale(pygame.image.load("img/cards/dragon.png"), (BOXSIZE, BOXSIZE))
 PINEAPPLE = pygame.transform.scale(pygame.image.load("img/cards/pineapple.png"), (BOXSIZE, BOXSIZE))
 PEAR = pygame.transform.scale(pygame.image.load("img/cards/pear.png"), (BOXSIZE, BOXSIZE))
+timer = pygame.image.load("img/clock.png")
+timer = pygame.transform.scale(timer, (142, 88))
 
 
 class Game:
@@ -68,6 +70,8 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.__attention = 100
+        self.__time = 99
+        self.__currentTime = 0
 
     @property
     def attention(self):
@@ -109,6 +113,7 @@ class Game:
         ATTENTION_TEXT = pygame.image.load("img/attention.png")
         ATTENTION_TEXT = pygame.transform.scale(ATTENTION_TEXT, (113, 40))
         ATTENTION_WHITE_BAR = pygame.image.load("img/bar.png")
+        start_ticks = pygame.time.get_ticks()  # starter tick
 
         while True:
             mouseClicked = False
@@ -130,6 +135,19 @@ class Game:
                 elif event.type == MOUSEBUTTONUP:
                     mousex, mousey = event.pos
                     mouseClicked = True
+
+            seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)  # calculate how many seconds
+            if seconds != self.__currentTime:
+                self.__currentTime = seconds
+                self.__time -= 1
+
+            clock_g = str(self.__time)
+
+            textFont = pygame.font.SysFont('comicsansms', 25)
+            TextSurf, TextReact = self.textObj(clock_g, textFont, WHITE)
+            TextReact.center = (850, 100)
+            DISPLAYSURF.blit(TextSurf, TextReact)
+            DISPLAYSURF.blit(timer, (780, 57))
 
             boxx, boxy = self.getBoxAtPixel(mousex, mousey)
             if boxx != None and boxy != None:
@@ -237,7 +255,7 @@ class Game:
             left, top = self.leftTopCoordsOfBox(box[0], box[1])
             pygame.draw.rect(DISPLAYSURF, BGCOLOR, (left, top, BOXSIZE, BOXSIZE))
             shape = self.getShape(board, box[0], box[1])
-            self.drawIcon(shape,box[0], box[1])
+            self.drawIcon(shape, box[0], box[1])
             if coverage > 0:  # only draw the cover if there is an coverage
                 pygame.draw.rect(DISPLAYSURF, BOXCOLOR, (left, top, coverage, BOXSIZE))
         pygame.display.update()
@@ -265,7 +283,7 @@ class Game:
                 else:
                     # Draw the (revealed) icon.
                     shape = self.getShape(board, boxx, boxy)
-                    self.drawIcon(shape,boxx, boxy)
+                    self.drawIcon(shape, boxx, boxy)
 
     def drawHighlightBox(self, boxx, boxy):
         left, top = self.leftTopCoordsOfBox(boxx, boxy)
@@ -305,3 +323,7 @@ class Game:
             if False in i:
                 return False  # return False if any boxes are covered.
         return True
+
+    def textObj(self, text, font, color):
+        textSurface = font.render(text, True, color)
+        return textSurface, textSurface.get_rect()
