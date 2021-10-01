@@ -6,6 +6,7 @@ from main import *
 from Control import *
 import random, pygame, sys
 from pygame.locals import *
+import statistics
 
 # =======================================================================
 # Score
@@ -69,16 +70,25 @@ PINEAPPLE = pygame.transform.scale(pygame.image.load("img/cards/pineapple.png"),
 PEAR = pygame.transform.scale(pygame.image.load("img/cards/pear.png"), (BOXSIZE, BOXSIZE))
 timer = pygame.image.load("img/clock.png")
 timer = pygame.transform.scale(timer, (142, 88))
+ADD3 = pygame.image.load("img/Add3.jpg")
+ADD3 = pygame.transform.scale(ADD3, (60, 40))
+ATTEMPS = pygame.image.load("img/attemps.png")
+ATTEMPS = pygame.transform.scale(ATTEMPS, (113, 40))
 
 
 class Game:
 
-    def __init__(self, screen):
+    def __init__(self, screen, finish):
         self.screen = screen
         self.__attention = 0
-        self.__time = 30
+        self.__time = 60
         self.__currentTime = 0
         self.__secondsOverTemp = 0
+        self.__showAdd = False
+        self.__attemps = 0
+        self.__wrong = 0
+        self.__finishScreen = finish
+        self.__attentionRecords = []
 
     @property
     def attention(self):
@@ -120,6 +130,7 @@ class Game:
         ATTENTION_TEXT = pygame.image.load("img/attention.png")
         ATTENTION_TEXT = pygame.transform.scale(ATTENTION_TEXT, (113, 40))
         ATTENTION_WHITE_BAR = pygame.image.load("img/bar.png")
+
         start_ticks = pygame.time.get_ticks()  # starter tick
 
         while True:
@@ -132,6 +143,7 @@ class Game:
             ATTENTION_WHITE_BAR = pygame.transform.scale(ATTENTION_WHITE_BAR, (int(attention_bar_width), 40))
             DISPLAYSURF.blit(ATTENTION_WHITE_BAR, (220, 100))
             self.drawBoard(mainBoard, revealedBoxes)
+            DISPLAYSURF.blit(ATTEMPS, (470, 100))
 
             for event in pygame.event.get():  # event handling loop
                 if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -144,19 +156,23 @@ class Game:
                     mouseClicked = True
 
             self.seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)  # calculate how many seconds
+
             if self.seconds != self.__currentTime:
+                self.__attentionRecords.append(self.__attention)
                 if self.attention > 60:
                     self.__secondsOverTemp += 1
-                    print(self.__secondsOverTemp)
                 else:
                     self.__secondsOverTemp = 0
 
                 if self.__secondsOverTemp == HOLD_SECONDS:
-
-                    print("获得额外时间",self.__time)
                     self.__time += ADD_SECONDS
                     self.__secondsOverTemp = 0
-                    print(self.__time)
+                    self.__showAdd = True
+                else:
+                    self.__showAdd = False
+                if self.__showAdd:
+                    self.screen.blit(ADD3, (900, 100))
+
                 self.__currentTime = self.seconds
                 self.__time -= 1
 
@@ -183,27 +199,17 @@ class Game:
                         icon1shape = self.getShape(mainBoard, firstSelection[0], firstSelection[1])
                         icon2shape = self.getShape(mainBoard, boxx, boxy)
 
+                        self.__attemps += 1
+
                         if icon1shape != icon2shape:
                             # Icons don't match. Re-cover up both selections.
                             pygame.time.wait(1000)  # 1000 milliseconds = 1 sec
                             self.coverBoxesAnimation(mainBoard, [(firstSelection[0], firstSelection[1]), (boxx, boxy)])
                             revealedBoxes[firstSelection[0]][firstSelection[1]] = False
                             revealedBoxes[boxx][boxy] = False
+                            self.__wrong += 1
                         elif self.hasWon(revealedBoxes):  # check if all pairs found
-                            self.gameWonAnimation(mainBoard)
-                            pygame.time.wait(2000)
-
-                            # Reset the board
-                            mainBoard = self.getRandomizedBoard()
-                            revealedBoxes = self.generateRevealedBoxesData(False)
-
-                            # Show the fully unrevealed board for a second.
-                            self.drawBoard(mainBoard, revealedBoxes)
-                            pygame.display.update()
-                            pygame.time.wait(1000)
-
-                            # Replay the start game animation.
-                            self.startGameAnimation(mainBoard)
+                            self.endGame()
                         firstSelection = None  # reset firstSelection variable
 
             # Redraw the screen and wait a clock tick.
@@ -323,18 +329,14 @@ class Game:
             self.revealBoxesAnimation(board, boxGroup)
             self.coverBoxesAnimation(board, boxGroup)
 
-    def gameWonAnimation(self, board):
-        # flash the background color when the player has won
-        coveredBoxes = self.generateRevealedBoxesData(True)
-        color1 = LIGHTBGCOLOR
-        color2 = BGCOLOR
-
-        for i in range(13):
-            color1, color2 = color2, color1  # swap colors
-            DISPLAYSURF.fill(color1)
-            self.drawBoard(board, coveredBoxes)
-            pygame.display.update()
-            pygame.time.wait(300)
+    def endGame(self):
+        total_time = self.seconds
+        attempts = self.__attemps
+        print(self.__wrong,self.__attemps)
+        rightRate = int((self.__attemps - self.__wrong) / self.__attemps * 100)
+        attention = int(statistics.mean(self.__attentionRecords))
+        total = int(rightRate + (int(self.__currentTime / total_time) * 60) + (attention * 0.8))
+        self.__finishScreen.run(total_time, attempts, rightRate, attention, total)
 
     def hasWon(self, revealedBoxes):
         # Returns True if all the boxes have been revealed, otherwise False

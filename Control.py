@@ -49,15 +49,14 @@ class Control:
         pygame.display.set_icon(logo)
 
         # init screens:
+        self.info_screen = InfoScreen(self.__screen)
+        self.finish_screen = FinishScreen(self.__screen)
         self.title_screen = TitleScreen(self.__screen)
-        self.game_screen = Game(self.__screen)
+        self.game_screen = Game(self.__screen, self.finish_screen)
 
         pn = PyNeuro(title_screen=self.title_screen, game=self.game_screen)
         pn.connect()
         pn.start()
-
-        self.info_screen = InfoScreen(self.__screen)
-        self.finish_screen = FinishScreen(self.__screen)
 
         while True:
             # The function below has move to independent def refere to different pages
