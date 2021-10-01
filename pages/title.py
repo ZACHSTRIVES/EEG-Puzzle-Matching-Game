@@ -38,7 +38,6 @@ class TitleScreen:
 
     @signal_status.setter
     def signal_status(self, status):
-        print(status)
         self.__signal_status = status
 
     def run(self):

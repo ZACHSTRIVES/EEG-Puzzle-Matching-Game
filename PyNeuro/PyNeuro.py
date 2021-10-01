@@ -40,7 +40,7 @@ class PyNeuro:
 
     callBacksDictionary = {}  # keep a track of all callbacks
 
-    def __init__(self,title_screen,game):
+    def __init__(self, title_screen, game):
         self.__parserThread = None
         self.__threadRun = False
         self.__connected = False
@@ -102,10 +102,8 @@ class PyNeuro:
                             if data["eSense"]["attention"] + data["eSense"]["meditation"] == 0:
                                 if data["status"] == "fitting":
                                     if self.__status != data["status"]:
-                                        self.status="fitting"
-
+                                        self.status = "fitting"
                             else:
-
                                 self.status = "connected"
                                 self.attention = data["eSense"]["attention"]
                                 self.meditation = data["eSense"]["meditation"]
@@ -162,7 +160,7 @@ class PyNeuro:
         if len(self.__attention_callbacks) != 0:
             for callback in self.__attention_callbacks:
                 callback(self.__attention)
-        self.game.attention=value
+        self.game.attention = value
 
     # meditation
     @property
@@ -202,7 +200,4 @@ class PyNeuro:
         self.__status = value
         for callback in self.__status__callbacks:
             callback(self.__status)
-
-        self.title_screen.signal_status=value
-        print(self.title_screen.signal_status)
-
+        self.title_screen.signal_status = value

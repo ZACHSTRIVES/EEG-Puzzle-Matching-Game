@@ -7,6 +7,12 @@ from Control import *
 import random, pygame, sys
 from pygame.locals import *
 
+# =======================================================================
+# Score
+HOLD_SECONDS = 4
+ADD_SECONDS = 3
+# =======================================================================
+
 FPS = 30  # frames per second, the general speed of the program
 WINDOWWIDTH = 1000  # size of window's width in pixels
 WINDOWHEIGHT = 800  # size of windows' height in pixels
@@ -69,9 +75,10 @@ class Game:
 
     def __init__(self, screen):
         self.screen = screen
-        self.__attention = 100
-        self.__time = 99
+        self.__attention = 0
+        self.__time = 30
         self.__currentTime = 0
+        self.__secondsOverTemp = 0
 
     @property
     def attention(self):
@@ -136,9 +143,21 @@ class Game:
                     mousex, mousey = event.pos
                     mouseClicked = True
 
-            seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)  # calculate how many seconds
-            if seconds != self.__currentTime:
-                self.__currentTime = seconds
+            self.seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)  # calculate how many seconds
+            if self.seconds != self.__currentTime:
+                if self.attention > 60:
+                    self.__secondsOverTemp += 1
+                    print(self.__secondsOverTemp)
+                else:
+                    self.__secondsOverTemp = 0
+
+                if self.__secondsOverTemp == HOLD_SECONDS:
+
+                    print("获得额外时间",self.__time)
+                    self.__time += ADD_SECONDS
+                    self.__secondsOverTemp = 0
+                    print(self.__time)
+                self.__currentTime = self.seconds
                 self.__time -= 1
 
             clock_g = str(self.__time)
