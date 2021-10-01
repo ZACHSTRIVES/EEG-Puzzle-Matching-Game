@@ -6,4 +6,4 @@ class GameState(Enum):
     NEWGAME = 1
     FINISH = 2
     INFO = 3
-    TEST = 4
+    FAIL = 4

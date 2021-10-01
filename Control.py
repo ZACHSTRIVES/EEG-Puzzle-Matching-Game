@@ -14,6 +14,7 @@ from pages.game import *
 from pages.info import *
 from pages.finish import *
 from pages.title import *
+from pages.fail import *
 
 main_img = pygame.image.load('img/gameMain.png')
 main_img = pygame.transform.scale(main_img, (260, 260))
@@ -58,6 +59,7 @@ class Control:
 
         self.info_screen = InfoScreen(self.__screen)
         self.finish_screen = FinishScreen(self.__screen)
+        self.fail_screen = FailedScreen(self.__screen)
 
         while True:
             # The function below has move to independent def refere to different pages
@@ -69,7 +71,7 @@ class Control:
                 game_state = self.game_screen.play()
 
             if game_state == GameState.FINISH:
-                game_state = self.info_screen.run()
+                game_state = self.fail_screen.run()
 
             if game_state == GameState.INFO:
                 game_state = self.info_screen.run()
