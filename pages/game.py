@@ -83,7 +83,7 @@ class Game:
     def __init__(self, screen, finish,changeState):
         self.screen = screen
         self.__attention = 0
-        self.__time = 10
+        self.__time = 60
         self.__currentTime = 0
         self.__secondsOverTemp = 0
         self.__showAdd = False
@@ -221,7 +221,8 @@ class Game:
                             revealedBoxes[boxx][boxy] = False
                             self.__wrong += 1
                         elif self.hasWon(revealedBoxes):  # check if all pairs found
-                            firstSelection = None
+                            self.endGame()
+                        firstSelection = None  # reset firstSelection variable
 
             # Redraw the screen and wait a clock tick.
             pygame.display.update()
