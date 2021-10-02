@@ -85,7 +85,7 @@ class Game:
         self.__currentTime = 0
         self.__secondsOverTemp = 0
         self.__showAdd = False
-        self.__attemps = 0
+        self.__attempts = 0
         self.__wrong = 0
         self.__finishScreen = finish
         self.__attentionRecords = []
@@ -331,9 +331,9 @@ class Game:
 
     def endGame(self):
         total_time = self.seconds
-        attempts = self.__attemps
-        print(self.__wrong,self.__attemps)
-        rightRate = int((self.__attemps - self.__wrong) / self.__attemps * 100)
+        attempts = self.__attempts
+        print(self.__wrong,self.__attempts)
+        rightRate = int((self.__attempts - self.__wrong) / self.__attempts * 100)
         attention = int(statistics.mean(self.__attentionRecords))
         total = int(rightRate + (int(self.__currentTime / total_time) * 60) + (attention * 0.8))
         self.__finishScreen.run(total_time, attempts, rightRate, attention, total)
