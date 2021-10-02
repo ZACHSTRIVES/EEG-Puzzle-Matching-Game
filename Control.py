@@ -34,15 +34,13 @@ WHITE = (255, 255, 255)
 class Control:
     def __init__(self):
         self.__status = "NotConnected"
+        self.game_state = GameState.TITLE
 
     def start(self):
         pygame.init()
 
         '''change: the size of main window and elememt position'''
         self.__screen = pygame.display.set_mode((1000, 800))  # windows_size
-
-        game_state = GameState.TITLE  # start with main(title) screen
-
         # set app name on top bar
         pygame.display.set_caption("EEG-Game")
 
@@ -53,7 +51,7 @@ class Control:
         self.info_screen = InfoScreen(self.__screen)
         self.finish_screen = FinishScreen(self.__screen)
         self.title_screen = TitleScreen(self.__screen)
-        self.game_screen = Game(self.__screen, self.finish_screen)
+        self.game_screen = Game(self.__screen, self.finish_screen,self.changeState)
 
         pn = PyNeuro(title_screen=self.title_screen, game=self.game_screen)
         pn.connect()
@@ -61,23 +59,25 @@ class Control:
 
         self.fail_screen = FailedScreen(self.__screen)
 
-
         while True:
             # The function below has move to independent def refere to different pages
 
-            if game_state == GameState.TITLE:
-                game_state = self.title_screen.run()
+            if self.game_state == GameState.TITLE:
+                self.game_state = self.title_screen.run()
 
-            if game_state == GameState.NEWGAME:
-                game_state = self.game_screen.play()
+            if self.game_state == GameState.NEWGAME:
+                self.game_state = self.game_screen.play()
 
-            if game_state == GameState.FINISH:
-                game_state = self.fail_screen.run()
+            if self.game_state == GameState.FINISH:
+                self.game_state = self.fail_screen.run()
 
-            if game_state == GameState.INFO:
-                game_state = self.info_screen.run()
+            if self.game_state == GameState.INFO:
+                self.game_state = self.info_screen.run()
 
-            if game_state == GameState.QUIT:
+            if self.game_state == GameState.QUIT:
                 pn.disconnect()
                 pygame.quit()
                 return
+
+    def changeState(self):
+        self.game_state = self.fail_screen.run()

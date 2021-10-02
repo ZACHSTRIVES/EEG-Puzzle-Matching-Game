@@ -80,10 +80,10 @@ BOX = pygame.transform.scale(BOX, (40, 40))
 
 class Game:
 
-    def __init__(self, screen, finish):
+    def __init__(self, screen, finish,changeState):
         self.screen = screen
         self.__attention = 0
-        self.__time = 60
+        self.__time = 10
         self.__currentTime = 0
         self.__secondsOverTemp = 0
         self.__showAdd = False
@@ -91,6 +91,7 @@ class Game:
         self.__wrong = 0
         self.__finishScreen = finish
         self.__attentionRecords = []
+        self.changeState =changeState
 
     @property
     def attention(self):
@@ -178,6 +179,8 @@ class Game:
 
                 self.__currentTime = self.seconds
                 self.__time -= 1
+                if self.__time<0:
+                    self.changeState()
 
             clock_g = str(self.__time)
 
@@ -208,7 +211,7 @@ class Game:
                         icon1shape = self.getShape(mainBoard, firstSelection[0], firstSelection[1])
                         icon2shape = self.getShape(mainBoard, boxx, boxy)
 
-                        self.__attemps += 1
+                        self.__attempts += 1
 
                         if icon1shape != icon2shape:
                             # Icons don't match. Re-cover up both selections.
@@ -218,8 +221,7 @@ class Game:
                             revealedBoxes[boxx][boxy] = False
                             self.__wrong += 1
                         elif self.hasWon(revealedBoxes):  # check if all pairs found
-                            self.endGame()
-                        firstSelection = None  # reset firstSelection variable
+                            firstSelection = None
 
             # Redraw the screen and wait a clock tick.
             pygame.display.update()

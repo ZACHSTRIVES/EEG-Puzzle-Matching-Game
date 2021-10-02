@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+import pygame.freetype
 
 class UIElement(Sprite):
     """ An user interface element that can be added to a surface """
