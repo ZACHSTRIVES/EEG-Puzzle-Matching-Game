@@ -74,6 +74,8 @@ ADD3 = pygame.image.load("img/Add3.jpg")
 ADD3 = pygame.transform.scale(ADD3, (60, 40))
 ATTEMPS = pygame.image.load("img/attemps.png")
 ATTEMPS = pygame.transform.scale(ATTEMPS, (113, 40))
+BOX = pygame.image.load("img/box.png")
+BOX = pygame.transform.scale(BOX, (40, 40))
 
 
 class Game:
@@ -144,6 +146,7 @@ class Game:
             DISPLAYSURF.blit(ATTENTION_WHITE_BAR, (220, 100))
             self.drawBoard(mainBoard, revealedBoxes)
             DISPLAYSURF.blit(ATTEMPS, (470, 100))
+            DISPLAYSURF.blit(BOX, (580, 100))
 
             for event in pygame.event.get():  # event handling loop
                 if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -183,6 +186,12 @@ class Game:
             TextReact.center = (850, 100)
             DISPLAYSURF.blit(TextSurf, TextReact)
             DISPLAYSURF.blit(timer, (780, 57))
+
+            #blit the attemp data
+            attemp = str(self.__attempts)
+            attSurf, attReact = self.textObj(attemp, textFont, WHITE)
+            attReact.center = (600, 120)
+            DISPLAYSURF.blit(attSurf, attReact)
 
             boxx, boxy = self.getBoxAtPixel(mousex, mousey)
             if boxx != None and boxy != None:
