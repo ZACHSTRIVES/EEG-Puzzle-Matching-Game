@@ -41,40 +41,40 @@ class TitleScreen:
         self.__signal_status = status
 
     def run(self):
-        start_btn = UIElement(
-            center_position=(500, 470),
-            font_size=40,
-            bg_rgb=BG_1,
-            text_rgb=TXT_1,
-            text="Start",
-            action=GameState.NEWGAME,
-        )
-        quit_btn = UIElement(
-            center_position=(500, 670),
-            font_size=30,
-            bg_rgb=BG_1,
-            text_rgb=TXT_1,
-            text="Quit",
-            action=GameState.QUIT,
-        )
-        info_btn = UIElement(
-            center_position=(500, 570),
-            font_size=30,
-            bg_rgb=BG_1,
-            text_rgb=TXT_1,
-            text="How to play",
-            action=GameState.INFO,
-        )
-        test_btn = UIElement(
-            center_position=(500, 0),
-            font_size=30,
-            bg_rgb=BG_1,
-            text_rgb=TXT_1,
-            text="test",
-            action=GameState.FINISH,
-        )
-
-        buttons = [test_btn, start_btn, info_btn, quit_btn]
+        # start_btn = UIElement(
+        #     center_position=(500, 470),
+        #     font_size=40,
+        #     bg_rgb=BG_1,
+        #     text_rgb=TXT_1,
+        #     text="Start",
+        #     action=GameState.NEWGAME,
+        # )
+        # quit_btn = UIElement(
+        #     center_position=(500, 670),
+        #     font_size=30,
+        #     bg_rgb=BG_1,
+        #     text_rgb=TXT_1,
+        #     text="Quit",
+        #     action=GameState.QUIT,
+        # )
+        # info_btn = UIElement(
+        #     center_position=(500, 570),
+        #     font_size=30,
+        #     bg_rgb=BG_1,
+        #     text_rgb=TXT_1,
+        #     text="How to play",
+        #     action=GameState.INFO,
+        # )
+        # test_btn = UIElement(
+        #     center_position=(500, 0),
+        #     font_size=30,
+        #     bg_rgb=BG_1,
+        #     text_rgb=TXT_1,
+        #     text="test",
+        #     action=GameState.FINISH,
+        # )
+        #
+        # buttons = [test_btn, start_btn, info_btn, quit_btn]
 
         while True:
             mouse_up = False
@@ -86,12 +86,44 @@ class TitleScreen:
             self.__screen.blit(main_img, (370, 100))
             if self.signal_status == "scanning":
                 self.__screen.blit(connecting_1, (930, 10))
+                starts = ["Scanning EEG, Plz Wait", GameState.TITLE]
             elif self.signal_status == "fitting":
                 self.__screen.blit(connecting_2, (930, 10))
+                starts = ["Fitting EEG, Plz Wait", GameState.TITLE]
             elif self.signal_status == "connected":
                 self.__screen.blit(connected, (930, 10))
+                starts = ["Start", GameState.NEWGAME]
             else:
                 self.__screen.blit(noSignal, (930, 10))
+                starts = ["Connect to EEG to Start", GameState.TITLE]
+
+
+            start_btn = UIElement(
+                center_position=(500, 470),
+                font_size=40,
+                bg_rgb=BG_1,
+                text_rgb=TXT_1,
+                text=starts[0],
+                action=starts[1],
+            )
+            quit_btn = UIElement(
+                center_position=(500, 670),
+                font_size=30,
+                bg_rgb=BG_1,
+                text_rgb=TXT_1,
+                text="Quit",
+                action=GameState.QUIT,
+            )
+            info_btn = UIElement(
+                center_position=(500, 570),
+                font_size=30,
+                bg_rgb=BG_1,
+                text_rgb=TXT_1,
+                text="How to play",
+                action=GameState.INFO,
+            )
+
+            buttons = [start_btn, info_btn, quit_btn]
 
             for button in buttons:
                 ui_action = button.update(pygame.mouse.get_pos(), mouse_up)
